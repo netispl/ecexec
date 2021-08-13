@@ -6,3 +6,10 @@
     - name: test
       shell: |
         echo "test" > /tmp/pliczek
+
+
+    - name: usun zadanie z crontab
+      cron:
+        name: "2021-08-13"
+        state: absent
+      when: "'{{ crontab }}' == 'usun'"
