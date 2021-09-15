@@ -2,14 +2,18 @@
 
   tasks:
 
-
-    - name: test
-      shell: |
-        echo "test" > /tmp/pliczek
-
-
-    - name: usun zadanie z crontab
-      cron:
-        name: "2021-08-13"
-        state: absent
-      
+    - name:  Instalacja paczek kasnet/xkasnet ABC - SURFACE
+      apt:
+        name:
+          - xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1
+          - xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1
+          - xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1
+          - kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1
+          - kasnet-server-2.1.335=2.1.335r202109030813~bionic-1
+          - kasnet-src-2.1.335=2.1.335r202109030813~bionic-1
+          - kasnet-config-2.1.335=2.1.335r202109030813~bionic-1
+          - kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1
+        state: present
+        force: yes
+        update_cache: yes
+      when: ansible_product_name == 'Surface Go'
