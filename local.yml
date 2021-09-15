@@ -17,3 +17,32 @@
         force: yes
         update_cache: yes
       when: ansible_product_name == 'Surface Go'
+
+    - name: Sprawdzam czy jest config xkasnet'a
+      stat:
+        path: '/home/kasa/CONFIG'
+      register: stat_result
+
+    - name: Tworze config kasy - SURFACE new layout
+      ansible.builtin.lineinfile:
+        path: '/home/kasa/CONFIG'
+        line: kasa.config-1700x1200-ecabc-new-layout
+        create: yes
+      when: ansible_product_name == 'Surface Go' and not stat_result.stat.exists
+
+    - name: Zmiana rozdzielczosci - Surface
+      replace:
+        path: '/home/kasa/CONFIG'
+        regexp: '{{ item.regexp }}'
+        replace: '{{ item.line }}'
+        backup: yes
+      with_items:
+        - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
+      when: ansible_product_name == 'Surface Go' and stat_result.stat.exists
+
+
+    - name: Usuwam .cache
+      file:
+        state: absent
+        path: '/home/xkasnet/.cache'
+      ignore_errors: yes
