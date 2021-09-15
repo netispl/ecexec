@@ -7,28 +7,11 @@
         update_cache: yes
 
 
-    - name:  Instalacja paczek kasnet/xkasnet ABC - SURFACE
-      apt:
-        name:
-          - kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1
-          - kasnet-server-2.1.335=2.1.335r202109030813~bionic-1
-          - kasnet-src-2.1.335=2.1.335r202109030813~bionic-1
-          - kasnet-config-2.1.335=2.1.335r202109030813~bionic-1
-          - kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1
-        state: present
-        force: yes
-        update_cache: yes
-      when: ansible_product_name == 'Surface Go'
-
-    - name:  Instalacja paczek kasnet/xkasnet ABC - SURFACE
-      apt:
-        name:
-          - xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1
-          - xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1
-          - xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1          
-        state: present
-        force: yes
-        update_cache: yes
+    - name: Instalacja paczek kasnet/xkasnet ABC - SURFACE
+      shell: |
+         apt install kasnet-server-2.1.335=2.1.335r202109030813~bionic-1 kasnet-src-2.1.335=2.1.335r202109030813~bionic-1 kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1 kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1 xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1 --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages
+      args:
+        executable: /bin/bash
       when: ansible_product_name == 'Surface Go'
 
     - name: Sprawdzam czy jest config xkasnet'a
