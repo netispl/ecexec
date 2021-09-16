@@ -18,8 +18,7 @@
       ignore_errors: true
       community.mysql.mysql_query:
         login_db: 'kasa'
-        query:
-        - 'replace into StanKasy values ("serv.przez.symmetric",1);'
+        query:        
         - 'replace into StanKasy values ("promocje.konflikty.ec",1);'
         - 'replace into StanKasy values ("ksk.gazetki.wszystkie.sklepy",0);'
         - 'replace into StanKasy values ("Promocje.AutomatycznePrzeladowanie",1);'
@@ -46,7 +45,6 @@
       with_items:
         - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
       when: ansible_product_name == 'Surface Go' and stat_result.stat.exists
-
 
     - name: Usuwam .cache
       file:
