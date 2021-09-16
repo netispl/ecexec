@@ -9,18 +9,10 @@
 
     - name: Instalacja paczek kasnet/xkasnet ABC - SURFACE
       shell: |
-         . /root/.bashrc; /usr/bin/apt install kasnet-server-2.1.335=2.1.335r202109030813~bionic-1 kasnet-src-2.1.335=2.1.335r202109030813~bionic-1 kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1 kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1 xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1 --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages
+         export TERM="xterm-256color"; export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"; export SHELL="/bin/bash"; /usr/bin/apt install kasnet-server-2.1.335=2.1.335r202109030813~bionic-1 kasnet-src-2.1.335=2.1.335r202109030813~bionic-1 kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1 kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1 xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1 --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages
       args:
         executable: /bin/bash
       when: ansible_product_name == 'Surface Go'
-
-    #- name: Instalacja paczek kasnet/xkasnet ABC - SURFACE
-      #shell: |
-         #export TERM="xterm-256color"; export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"; /usr/bin/apt install kasnet-server-2.1.335=2.1.335r202109030813~bionic-1 kasnet-src-2.1.335=2.1.335r202109030813~bionic-1 kasnet-tools-2.1.335=2.1.335r202109030813~bionic-1 kasnet-libwaga-2.1.335=2.1.335r202109030813~bionic-1 xkasnet-client-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-client-ec-2.2.16=2.2.16r202109131430~bionic-1 xkasnet-libnative-jni-2.2.16=2.2.16r202109131430~bionic-1 --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages
-#      args:
-#        executable: /bin/bash
-#      when: ansible_product_name == 'Surface Go'
-
 
     - name: ustawiam zmienne
       ignore_errors: true
