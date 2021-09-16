@@ -19,10 +19,10 @@
       community.mysql.mysql_query:
         login_db: 'kasa'
         query:
-        - 'insert into StanKasy values ("serv.przez.symmetric",1);'
-        - 'insert into StanKasy values ("promocje.konflikty.ec",1);'
-        - 'insert into StanKasy values ("ksk.gazetki.wszystkie.sklepy",0);'
-        - 'insert into StanKasy values ("Promocje.AutomatycznePrzeladowanie",1);'
+        - 'replace into StanKasy values ("serv.przez.symmetric",1);'
+        - 'replace into StanKasy values ("promocje.konflikty.ec",1);'
+        - 'replace into StanKasy values ("ksk.gazetki.wszystkie.sklepy",0);'
+        - 'replace into StanKasy values ("Promocje.AutomatycznePrzeladowanie",1);'
         single_transaction: yes
 
     - name: Sprawdzam czy jest config xkasnet'a
