@@ -49,7 +49,7 @@
         backup: yes
       with_items:
         - { regexp: '^kasa.*$', line: '{{ POSconfig.stdout }}' }
-      when: ansible_product_name == 'Surface Go' and stat_result.stat.exists
+      when: ansible_product_name == 'Surface Go' and not stat_result.stat.exists
 
     - name: Usuwam .cache
       file:
