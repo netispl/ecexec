@@ -70,14 +70,14 @@
         path: /dev/ttyUSB_WAGA
       register: file_data
 
-      - name: Wylaczam waga
-        replace:
-          path: '//home/kasa/konfiguracja/zmienne.dat'
-          regexp: "{{ item.regexp }}"
-          replace: "{{ item.line }}"
-        with_items:
-          - { regexp: '(producent_wagi).([0-9])', line: '\1\t0' }
-        when: not file_data.stat.exists
+    - name: Wylaczam waga
+      replace:
+        path: '//home/kasa/konfiguracja/zmienne.dat'
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.line }}"
+      with_items:
+        - { regexp: '(producent_wagi).([0-9])', line: '\1\t0' }
+      when: not file_data.stat.exists
 
     - name:  Instalacja vrad
       apt:
