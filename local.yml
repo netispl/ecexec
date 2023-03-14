@@ -98,6 +98,7 @@
 
     - name: konfiguracja local
       blockinfile:
+        create: true
         marker: "## {mark} RAD3"
         path: '/home/xkasnet/konfiguracja/.local'
         block: |
