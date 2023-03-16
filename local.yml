@@ -72,6 +72,7 @@
 
     - name: Wylaczam waga
       replace:
+        backup: true
         path: '//home/kasa/konfiguracja/zmienne.dat'
         regexp: "{{ item.regexp }}"
         replace: "{{ item.line }}"
@@ -98,6 +99,7 @@
 
     - name: konfiguracja local
       blockinfile:
+        backup: true
         create: true
         marker: "## {mark} RAD3"
         path: '/home/xkasnet/konfiguracja/.local'
