@@ -29,14 +29,14 @@
     - name:  Instalacja paczek xkasnet
       apt:
         name:
-          - xkasnet-client-2.2.18=2.2.18r202302241432~bionic-1
-          - xkasnet-client-ec-2.2.18=2.2.18r202302241432~bionic-1
-          - xkasnet-libnative-jni-2.2.18=2.2.18r202302241432~bionic-1
+          - xkasnet-client-2.2.18=2.2.18r202303150915~bionic-1
+          - xkasnet-client-ec-2.2.18=2.2.18r202303150915~bionic-1
+          - xkasnet-libnative-jni-2.2.18=2.2.18r202303150915~bionic-1
         state: present
         #state: latest
         force: yes
         update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202302241432'
+      when: ver_xkasnet.stdout != '2.2.18r202303150915'
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
 
