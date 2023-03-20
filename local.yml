@@ -52,16 +52,16 @@
     - name:  Instalacja paczek kasnet
       apt:
         name:
-          - kasnet-libwaga-2.1.337=2.1.337r202302011414~bionic-1
-          - kasnet-server-2.1.337=2.1.337r202302011414~bionic-1
-          - kasnet-src-2.1.337=2.1.337r202302011414~bionic-1
-          - kasnet-config-2.1.337=2.1.337r202302011414~bionic-1
-          - kasnet-tools-2.1.337=2.1.337r202302011414~bionic-1
-          - kasnet-monitor-2.1.337=2.1.337r202302011414~bionic-1
+          - kasnet-libwaga-2.1.337=2.1.337r202302210914~bionic-1
+          - kasnet-server-2.1.337=2.1.337r202302210914~bionic-1
+          - kasnet-src-2.1.337=2.1.337r202302210914~bionic-1
+          - kasnet-config-2.1.337=2.1.337r202302210914~bionic-1
+          - kasnet-tools-2.1.337=2.1.337r202302210914~bionic-1
+          - kasnet-monitor-2.1.337=2.1.337r202302210914~bionic-1
         state: present
         force: yes
         update_cache: yes
-      when: ver_df_daemon.stdout != '2.1.337r202302011414'
+      when: ver_df_daemon.stdout != '2.1.337r202302210914'
       register: upgrade_df_daemon
       environment: "{{ proxy_env }}"
 
