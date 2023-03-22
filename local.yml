@@ -122,6 +122,7 @@
          app.rad3Promotion.rp.resendCount=1
          app.opt.showCustomerCardNumber=true
       no_log: true
+      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local')"
 
     - name: process k
       shell: cd /home/kasa/; bin/df_daemon -sem |grep "Kasjer zalogowany" | awk '{print $3}'
