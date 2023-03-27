@@ -44,6 +44,7 @@
       apt:
         name:
           - xkasnet-client-2.2.18=2.2.18r202303211027~jammy-1
+          - xkasnet-client-ec-2.2.18=2.2.18r202303211027~jammy-1
           - xkasnet-libnative-jni-2.2.18=2.2.18r202303211027~jammy-1
         state: present
         #state: latest
