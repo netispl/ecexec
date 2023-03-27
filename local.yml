@@ -26,7 +26,7 @@
       environment: "{{ proxy_env }}"
       ignore_errors: yes
 
-    - name:  Instalacja paczek xkasnet
+    - name:  Instalacja paczek xkasnet bionic
       apt:
         name:
           - xkasnet-client-2.2.18=2.2.18r202303211027~bionic-1
@@ -36,7 +36,20 @@
         #state: latest
         force: yes
         update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202303211027'
+      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '18.04'
+      register: upgrade_xkasnet
+      environment: "{{ proxy_env }}"
+
+    - name:  Instalacja paczek xkasnet jammy
+      apt:
+        name:
+          - xkasnet-client-2.2.18=2.2.18r202303211027~jammy-1
+          - xkasnet-libnative-jni-2.2.18=2.2.18r202303211027~jammy-1
+        state: present
+        #state: latest
+        force: yes
+        update_cache: yes
+      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '22.04'
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
 
@@ -49,7 +62,7 @@
         group: user
       ignore_errors: yes
 
-    - name:  Instalacja paczek kasnet
+    - name:  Instalacja paczek kasnet bionic
       apt:
         name:
           - kasnet-libwaga-2.1.337=2.1.337r202303221358~bionic-1
@@ -61,7 +74,23 @@
         state: present
         force: yes
         update_cache: yes
-      when: ver_df_daemon.stdout != '2.1.337r202303221358'
+      when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '18.04'
+      register: upgrade_df_daemon
+      environment: "{{ proxy_env }}"
+
+    - name:  Instalacja paczek kasnet jammy
+      apt:
+        name:
+          - kasnet-libwaga-2.1.337=2.1.337r202303221358~jammy-1
+          - kasnet-server-2.1.337=2.1.337r202303221358~jammy-1
+          - kasnet-src-2.1.337=2.1.337r202303221358~jammy-1
+          - kasnet-config-2.1.337=2.1.337r202303221358~jammy-1
+          - kasnet-tools-2.1.337=2.1.337r202303221358~jammy-1
+          - kasnet-monitor-2.1.337=2.1.337r202303221358~jammy-1
+        state: present
+        force: yes
+        update_cache: yes
+      when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '22.04'
       register: upgrade_df_daemon
       environment: "{{ proxy_env }}"
 
