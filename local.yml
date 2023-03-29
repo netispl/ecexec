@@ -54,6 +54,33 @@
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
 
+    - name: Sprawdzam z jakim configiem uruchomiona jest kasa
+      shell: |
+         ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
+      register: POSconfig
+
+    - name: Sprawdzam czy jest config xkasnet'a
+      stat:
+        path: '/home/kasa/CONFIG'
+      register: stat_result
+
+    - name: Tworze config kasy jezeli nie ma - new layout
+      ansible.builtin.lineinfile:
+        path: '/home/kasa/CONFIG'
+        line: '{{ POSconfig.stdout }}-new-layout'
+        create: yes
+      when: not stat_result.stat.exists
+
+    - name: Zmiana configa na nowy layout
+      replace:
+        path: '/home/kasa/CONFIG'
+        regexp: '{{ item.regexp }}'
+        replace: '{{ item.line }}'
+        backup: yes
+      with_items:
+        - { regexp: '^kasa.*$', line: '{{ POSconfig.stdout }}-new-layout' }
+      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
+
     - name: Zmieniam ownera na xkasnet
       file:
         path: /home/xkasnet
