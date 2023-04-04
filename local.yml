@@ -26,6 +26,11 @@
       environment: "{{ proxy_env }}"
       ignore_errors: yes
 
+    - name: Sprawdzam z jakim configiem uruchomiona jest kasa
+      shell: |
+         ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
+      register: POSconfig
+
     - name:  Instalacja paczek xkasnet bionic
       apt:
         name:
@@ -36,7 +41,7 @@
         #state: latest
         force: yes
         update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '18.04'
+      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
 
@@ -53,11 +58,6 @@
       when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '22.04'
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
-
-    - name: Sprawdzam z jakim configiem uruchomiona jest kasa
-      shell: |
-         ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
-      register: POSconfig
 
     - name: Sprawdzam czy jest config xkasnet'a
       stat:
