@@ -31,6 +31,9 @@
          ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
       register: POSconfig
 
+    - name: fail
+      failed_when: '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
+
     - name:  Instalacja paczek xkasnet bionic
       apt:
         name:
@@ -41,7 +44,7 @@
         #state: latest
         force: yes
         update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eciph-new-layout'
+      when: ver_xkasnet.stdout != '2.2.18r202303211027' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
       register: upgrade_xkasnet
       environment: "{{ proxy_env }}"
 
@@ -79,7 +82,18 @@
         backup: yes
       with_items:
         - { regexp: '^kasa.*$', line: '{{ POSconfig.stdout }}-new-layout' }
-      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eciph-new-layout'
+      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
+
+    - name: Zmiana configa na nowy layout
+      replace:
+        path: '/home/kasa/CONFIG'
+        regexp: '{{ item.regexp }}'
+        replace: '{{ item.line }}'
+        backup: yes
+      with_items:
+        - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
+      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
+
 
     - name: Zmieniam ownera na xkasnet
       file:
@@ -179,7 +193,7 @@
          app.rad3Promotion.rp.resendCount=1
          app.opt.showCustomerCardNumber=true
       no_log: true
-      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local') and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eciph-new-layout'"
+      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local')"
 
     - name: process k
       shell: cd /home/kasa/; bin/df_daemon -sem |grep "Kasjer zalogowany" | awk '{print $3}'
