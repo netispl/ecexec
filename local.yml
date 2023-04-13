@@ -33,7 +33,7 @@
 
     - name: fail
       shell: echo "bledny config"
-      failed_when: "'{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'"
+      failed_when: "'{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout' or '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eceuro'"
 
     - name:  Instalacja paczek xkasnet bionic
       apt:
@@ -194,7 +194,7 @@
          app.rad3Promotion.rp.resendCount=1
          app.opt.showCustomerCardNumber=true
       no_log: true
-      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local') and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'"
+      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local')"
 
     - name: process k
       shell: cd /home/kasa/; bin/df_daemon -sem |grep "Kasjer zalogowany" | awk '{print $3}'
