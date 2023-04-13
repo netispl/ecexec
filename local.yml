@@ -32,7 +32,8 @@
       register: POSconfig
 
     - name: fail
-      failed_when: '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
+      shell: echo "bledny config"
+      failed_when: "'{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'"
 
     - name:  Instalacja paczek xkasnet bionic
       apt:
