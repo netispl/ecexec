@@ -95,6 +95,11 @@
         - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
       when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
 
+    - name: Usuwam .cache
+      file:
+        state: absent
+        path: '/home/xkasnet/.cache'
+      ignore_errors: yes
 
     - name: Zmieniam ownera na xkasnet
       file:
@@ -169,8 +174,15 @@
          127.0.0.1  rad.mparagon.pl
       no_log: true
 
+    - name: backup configa
+      copy:
+        src: /home/xkasnet/konfiguracja/.local
+        dest: /home/xkasnet/konfiguracja/local-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}
+
     - name: konfiguracja local
       blockinfile:
+        owner: user
+        group: user
         backup: true
         create: true
         marker: "## {mark} RAD3"
