@@ -147,15 +147,15 @@
         path: /dev/ttyUSB_WAGA
       register: file_data
 
-    - name: Wylaczam waga
-      replace:
-        backup: true
-        path: '//home/kasa/konfiguracja/zmienne.dat'
-        regexp: "{{ item.regexp }}"
-        replace: "{{ item.line }}"
-      with_items:
-        - { regexp: '(producent_wagi).([0-9])', line: '\1\t0' }
-      when: not file_data.stat.exists
+    # - name: Wylaczam waga
+    #   replace:
+    #     backup: true
+    #     path: '//home/kasa/konfiguracja/zmienne.dat'
+    #     regexp: "{{ item.regexp }}"
+    #     replace: "{{ item.line }}"
+    #   with_items:
+    #     - { regexp: '(producent_wagi).([0-9])', line: '\1\t0' }
+    #   when: not file_data.stat.exists
 
     - name:  Instalacja vrad
       apt:
@@ -179,34 +179,34 @@
         src: /home/xkasnet/konfiguracja/.local
         dest: /home/xkasnet/konfiguracja/local-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}
 
-    - name: konfiguracja local
-      blockinfile:
-        owner: user
-        group: user
-        backup: true
-        create: true
-        marker: "## {mark} RAD3"
-        path: '/home/xkasnet/konfiguracja/.local'
-        block: |
-         menu4.el7.index=262
-         menu4.el7.image=EC_promolist.png
-         menu10.el7.index=265
-
-         app.promotionCalculator.isActive=false
-         app.promotionCalculator.showWindowAfterAddingClientCard=true
-         app.rad3Promotion.timeout=0
-         app.rad3Promotion.isActive=false
-         app.rad3Promotion.calculateAfterEachProduct=false
-         app.rad3Promotion.diagnosticSendInterval=60
-         app.rad3Promotion.sendDiagnosticsWithRegistration=false
-         app.rad3Promotion.rp.calculateAfterEachProduct=true
-
-         app.rad3Promotion.resendRequestCount=3
-         app.rad3Promotion.rp.timeout=200
-         app.rad3Promotion.rp.resendCount=1
-         app.opt.showCustomerCardNumber=true
-      no_log: true
-      when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local')"
+    # - name: konfiguracja local
+    #   blockinfile:
+    #     owner: user
+    #     group: user
+    #     backup: true
+    #     create: true
+    #     marker: "## {mark} RAD3"
+    #     path: '/home/xkasnet/konfiguracja/.local'
+    #     block: |
+    #      menu4.el7.index=262
+    #      menu4.el7.image=EC_promolist.png
+    #      menu10.el7.index=265
+    #
+    #      app.promotionCalculator.isActive=false
+    #      app.promotionCalculator.showWindowAfterAddingClientCard=true
+    #      app.rad3Promotion.timeout=0
+    #      app.rad3Promotion.isActive=false
+    #      app.rad3Promotion.calculateAfterEachProduct=false
+    #      app.rad3Promotion.diagnosticSendInterval=60
+    #      app.rad3Promotion.sendDiagnosticsWithRegistration=false
+    #      app.rad3Promotion.rp.calculateAfterEachProduct=true
+    #
+    #      app.rad3Promotion.resendRequestCount=3
+    #      app.rad3Promotion.rp.timeout=200
+    #      app.rad3Promotion.rp.resendCount=1
+    #      app.opt.showCustomerCardNumber=true
+    #   no_log: true
+    #   when: "'app.rad3Promotion.register' not in lookup('file', '/home/xkasnet/konfiguracja/.local')"
 
     - name: process k
       shell: cd /home/kasa/; bin/df_daemon -sem |grep "Kasjer zalogowany" | awk '{print $3}'
