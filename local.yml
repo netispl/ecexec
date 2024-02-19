@@ -8,139 +8,139 @@
 
   tasks:
 
-    - name: wersja kasnet
-      shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Wersja' order by czas desc limit 1;" kasa
-      register: ver_df_daemon
-      environment: "{{ proxy_env }}"
-
-    - name: wersja xasnet
-      shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Klient.Wersja' order by czas desc limit 1;" kasa
-      register: ver_xkasnet
-      environment: "{{ proxy_env }}"
-
-    - name: unhold paczek xkasnet'a
-      shell: |
-          sudo apt-mark unhold $(apt-mark showhold)
-      args:
-        executable: /bin/bash
-      environment: "{{ proxy_env }}"
-      ignore_errors: yes
-
-    - name: Sprawdzam z jakim configiem uruchomiona jest kasa
-      shell: |
-         ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
-      register: POSconfig
-
-    - name: fail
-      shell: echo "bledny config"
-      failed_when: "'{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout' or '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eceuro'"
-
-    - name:  Instalacja paczek xkasnet bionic
-      apt:
-        name:
-          - xkasnet-client-2.2.18=2.2.18r202401291032~bionic-1
-          - xkasnet-client-ec-2.2.18=2.2.18r202401291032~bionic-1
-          - xkasnet-libnative-jni-2.2.18=2.2.18r202401291032~bionic-1
-        state: present
-        #state: latest
-        force: yes
-        update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202401291032' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
-      register: upgrade_xkasnet
-      environment: "{{ proxy_env }}"
-
-    - name:  Instalacja paczek xkasnet jammy
-      apt:
-        name:
-          - xkasnet-client-2.2.18=2.2.18r202311161515~jammy-1
-          - xkasnet-client-ec-2.2.18=2.2.18r202311161515~jammy-1
-          - xkasnet-libnative-jni-2.2.18=2.2.18r202311161515~jammy-1
-        state: present
-        #state: latest
-        force: yes
-        update_cache: yes
-      when: ver_xkasnet.stdout != '2.2.18r202311161515' and ansible_distribution_version == '22.04'
-      register: upgrade_xkasnet
-      environment: "{{ proxy_env }}"
-
-    - name: Sprawdzam czy jest config xkasnet'a
-      stat:
-        path: '/home/kasa/CONFIG'
-      register: stat_result
-
-    - name: Tworze config kasy jezeli nie ma - new layout
-      ansible.builtin.lineinfile:
-        path: '/home/kasa/CONFIG'
-        line: '{{ POSconfig.stdout }}-new-layout'
-        create: yes
-      when: not stat_result.stat.exists
-
-    - name: Zmiana configa na nowy layout
-      replace:
-        path: '/home/kasa/CONFIG'
-        regexp: '{{ item.regexp }}'
-        replace: '{{ item.line }}'
-        backup: yes
-      with_items:
-        - { regexp: '^kasa.*$', line: '{{ POSconfig.stdout }}-new-layout' }
-      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
-
-    - name: Zmiana configa na nowy layout
-      replace:
-        path: '/home/kasa/CONFIG'
-        regexp: '{{ item.regexp }}'
-        replace: '{{ item.line }}'
-        backup: yes
-      with_items:
-        - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
-      when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
-
-    - name: Usuwam .cache
-      file:
-        state: absent
-        path: '/home/xkasnet/.cache'
-      ignore_errors: yes
-
-    - name: Zmieniam ownera na xkasnet
-      file:
-        path: /home/xkasnet
-        state: directory
-        recurse: yes
-        owner: user
-        group: user
-      ignore_errors: yes
-
-    - name:  Instalacja paczek kasnet bionic
-      apt:
-        name:
-          - kasnet-libwaga-2.1.337=2.1.337r202303221358~bionic-1
-          - kasnet-server-2.1.337=2.1.337r202303221358~bionic-1
-          - kasnet-src-2.1.337=2.1.337r202303221358~bionic-1
-          - kasnet-config-2.1.337=2.1.337r202303221358~bionic-1
-          - kasnet-tools-2.1.337=2.1.337r202303221358~bionic-1
-          - kasnet-monitor-2.1.337=2.1.337r202303221358~bionic-1
-        state: present
-        force: yes
-        update_cache: yes
-      when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '18.04'
-      register: upgrade_df_daemon
-      environment: "{{ proxy_env }}"
-
-    - name:  Instalacja paczek kasnet jammy
-      apt:
-        name:
-          - kasnet-libwaga-2.1.337=2.1.337r202303221358~jammy-1
-          - kasnet-server-2.1.337=2.1.337r202303221358~jammy-1
-          - kasnet-src-2.1.337=2.1.337r202303221358~jammy-1
-          - kasnet-config-2.1.337=2.1.337r202303221358~jammy-1
-          - kasnet-tools-2.1.337=2.1.337r202303221358~jammy-1
-          - kasnet-monitor-2.1.337=2.1.337r202303221358~jammy-1
-        state: present
-        force: yes
-        update_cache: yes
-      when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '22.04'
-      register: upgrade_df_daemon
-      environment: "{{ proxy_env }}"
+    # - name: wersja kasnet
+    #   shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Wersja' order by czas desc limit 1;" kasa
+    #   register: ver_df_daemon
+    #   environment: "{{ proxy_env }}"
+    #
+    # - name: wersja xasnet
+    #   shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Klient.Wersja' order by czas desc limit 1;" kasa
+    #   register: ver_xkasnet
+    #   environment: "{{ proxy_env }}"
+    #
+    # - name: unhold paczek xkasnet'a
+    #   shell: |
+    #       sudo apt-mark unhold $(apt-mark showhold)
+    #   args:
+    #     executable: /bin/bash
+    #   environment: "{{ proxy_env }}"
+    #   ignore_errors: yes
+    #
+    # - name: Sprawdzam z jakim configiem uruchomiona jest kasa
+    #   shell: |
+    #      ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
+    #   register: POSconfig
+    #
+    # - name: fail
+    #   shell: echo "bledny config"
+    #   failed_when: "'{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout' or '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eceuro'"
+    #
+    # - name:  Instalacja paczek xkasnet bionic
+    #   apt:
+    #     name:
+    #       - xkasnet-client-2.2.18=2.2.18r202401291032~bionic-1
+    #       - xkasnet-client-ec-2.2.18=2.2.18r202401291032~bionic-1
+    #       - xkasnet-libnative-jni-2.2.18=2.2.18r202401291032~bionic-1
+    #     state: present
+    #     #state: latest
+    #     force: yes
+    #     update_cache: yes
+    #   when: ver_xkasnet.stdout != '2.2.18r202401291032' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
+    #   register: upgrade_xkasnet
+    #   environment: "{{ proxy_env }}"
+    #
+    # - name:  Instalacja paczek xkasnet jammy
+    #   apt:
+    #     name:
+    #       - xkasnet-client-2.2.18=2.2.18r202311161515~jammy-1
+    #       - xkasnet-client-ec-2.2.18=2.2.18r202311161515~jammy-1
+    #       - xkasnet-libnative-jni-2.2.18=2.2.18r202311161515~jammy-1
+    #     state: present
+    #     #state: latest
+    #     force: yes
+    #     update_cache: yes
+    #   when: ver_xkasnet.stdout != '2.2.18r202311161515' and ansible_distribution_version == '22.04'
+    #   register: upgrade_xkasnet
+    #   environment: "{{ proxy_env }}"
+    #
+    # - name: Sprawdzam czy jest config xkasnet'a
+    #   stat:
+    #     path: '/home/kasa/CONFIG'
+    #   register: stat_result
+    #
+    # - name: Tworze config kasy jezeli nie ma - new layout
+    #   ansible.builtin.lineinfile:
+    #     path: '/home/kasa/CONFIG'
+    #     line: '{{ POSconfig.stdout }}-new-layout'
+    #     create: yes
+    #   when: not stat_result.stat.exists
+    #
+    # - name: Zmiana configa na nowy layout
+    #   replace:
+    #     path: '/home/kasa/CONFIG'
+    #     regexp: '{{ item.regexp }}'
+    #     replace: '{{ item.line }}'
+    #     backup: yes
+    #   with_items:
+    #     - { regexp: '^kasa.*$', line: '{{ POSconfig.stdout }}-new-layout' }
+    #   when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
+    #
+    # - name: Zmiana configa na nowy layout
+    #   replace:
+    #     path: '/home/kasa/CONFIG'
+    #     regexp: '{{ item.regexp }}'
+    #     replace: '{{ item.line }}'
+    #     backup: yes
+    #   with_items:
+    #     - { regexp: '^kasa.*$', line: 'kasa.config-1700x1200-ecabc-new-layout' }
+    #   when: stat_result.stat.exists and POSconfig.stdout is not search("kasa.*-new-layout") and '{{ POSconfig.stdout }}' == 'kasa.config-1700x1200-eciph-new-layout'
+    #
+    # - name: Usuwam .cache
+    #   file:
+    #     state: absent
+    #     path: '/home/xkasnet/.cache'
+    #   ignore_errors: yes
+    #
+    # - name: Zmieniam ownera na xkasnet
+    #   file:
+    #     path: /home/xkasnet
+    #     state: directory
+    #     recurse: yes
+    #     owner: user
+    #     group: user
+    #   ignore_errors: yes
+    #
+    # - name:  Instalacja paczek kasnet bionic
+    #   apt:
+    #     name:
+    #       - kasnet-libwaga-2.1.337=2.1.337r202303221358~bionic-1
+    #       - kasnet-server-2.1.337=2.1.337r202303221358~bionic-1
+    #       - kasnet-src-2.1.337=2.1.337r202303221358~bionic-1
+    #       - kasnet-config-2.1.337=2.1.337r202303221358~bionic-1
+    #       - kasnet-tools-2.1.337=2.1.337r202303221358~bionic-1
+    #       - kasnet-monitor-2.1.337=2.1.337r202303221358~bionic-1
+    #     state: present
+    #     force: yes
+    #     update_cache: yes
+    #   when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '18.04'
+    #   register: upgrade_df_daemon
+    #   environment: "{{ proxy_env }}"
+    #
+    # - name:  Instalacja paczek kasnet jammy
+    #   apt:
+    #     name:
+    #       - kasnet-libwaga-2.1.337=2.1.337r202303221358~jammy-1
+    #       - kasnet-server-2.1.337=2.1.337r202303221358~jammy-1
+    #       - kasnet-src-2.1.337=2.1.337r202303221358~jammy-1
+    #       - kasnet-config-2.1.337=2.1.337r202303221358~jammy-1
+    #       - kasnet-tools-2.1.337=2.1.337r202303221358~jammy-1
+    #       - kasnet-monitor-2.1.337=2.1.337r202303221358~jammy-1
+    #     state: present
+    #     force: yes
+    #     update_cache: yes
+    #   when: ver_df_daemon.stdout != '2.1.337r202303221358' and ansible_distribution_version == '22.04'
+    #   register: upgrade_df_daemon
+    #   environment: "{{ proxy_env }}"
 
     # - name: port waga
     #   stat:
@@ -156,6 +156,92 @@
     #   with_items:
     #     - { regexp: '(producent_wagi).([0-9])', line: '\1\t0' }
     #   when: not file_data.stat.exists
+
+    - name: unhold paczek xkasnet'a
+      shell: |
+          sudo apt-mark unhold $(apt-mark showhold)
+      args:
+        executable: /bin/bash
+      environment: "{{ proxy_env }}"
+      ignore_errors: yes
+
+    - name: Sprawdzam z jakim configiem uruchomiona jest kasa
+      shell: |
+         ps aux | grep "kasa.config" |grep -v grep | awk '{print $NF}'
+      register: POSconfig
+
+    - name: wersja kasnet
+      shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Wersja' order by czas desc limit 1;" kasa
+      register: ver_df_daemon
+      environment: "{{ proxy_env }}"
+
+    - name: wersja xasnet
+      shell: mysql -N -e "select wartosc from KasyUstawienia where parametr='Klient.Wersja' order by czas desc limit 1;" kasa
+      register: ver_xkasnet
+      environment: "{{ proxy_env }}"
+
+    - name: backup configa
+      copy:
+        src: /home/xkasnet/konfiguracja/.local
+        dest: /home/xkasnet/konfiguracja/local-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}
+
+    - name:  Instalacja paczek xkasnet bionic
+      apt:
+        name:
+          - xkasnet-client-2.2.18=2.2.18r202401291032~bionic-1
+          - xkasnet-client-ec-2.2.18=2.2.18r202401291032~bionic-1
+          - xkasnet-libnative-jni-2.2.18=2.2.18r202401291032~bionic-1
+        state: present
+        force: yes
+        update_cache: yes
+      when: ver_xkasnet.stdout != '2.2.18r202401291032' and ansible_distribution_version == '18.04' and '{{ POSconfig.stdout }}' != 'kasa.config-1700x1200-eceuro'
+      register: upgrade_xkasnet
+      environment: "{{ proxy_env }}"
+
+    - name:  Instalacja paczek xkasnet jammy
+      apt:
+        name:
+          - xkasnet-client-2.2.18=2.2.18r202401291032~jammy-1
+          - xkasnet-libnative-jni-2.2.18=2.2.18r202401291032~jammy-1
+        state: present
+        #state: latest
+        force: yes
+        update_cache: yes
+      when: ver_xkasnet.stdout != '2.2.18r202401291032' and ansible_distribution_version == '22.04'
+      register: upgrade_xkasnet
+      environment: "{{ proxy_env }}"
+
+    - name: config xkasnet
+      blockinfile:
+        owner: user
+        group: user
+        marker: "## {mark} nr"
+        path: '/home/xkasnet/konfiguracja/.local'
+        block: |
+         app.promotionCalculator.service1.name=Rad3PromotionService
+         app.promotionCalculator.service1.handlesPhoneNumber=true
+      no_log: true
+      when: "'app.rad3Promotion.register' in lookup('file', '/home/xkasnet/konfiguracja/.local')"
+
+
+    - name: podmiana linkow
+      shell: |
+         perl -p -i -e 's;codeProcessor.*.$;#;g' /home/xkasnet/konfiguracja/.local
+
+    - name: Usuwam .cache
+      file:
+        state: absent
+        path: '/home/xkasnet/.cache'
+      ignore_errors: yes
+
+    - name: Zmieniam ownera na xkasnet
+      file:
+        path: /home/xkasnet
+        state: directory
+        recurse: yes
+        owner: user
+        group: user
+      ignore_errors: yes
 
     - name:  Instalacja vrad
       apt:
@@ -174,10 +260,10 @@
          127.0.0.1  rad.mparagon.pl
       no_log: true
 
-    - name: backup configa
-      copy:
-        src: /home/xkasnet/konfiguracja/.local
-        dest: /home/xkasnet/konfiguracja/local-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}
+    # - name: backup configa
+    #   copy:
+    #     src: /home/xkasnet/konfiguracja/.local
+    #     dest: /home/xkasnet/konfiguracja/local-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}
 
     # - name: konfiguracja local
     #   blockinfile:
